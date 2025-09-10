@@ -18,7 +18,6 @@ public class ControllerPID {
     }
 
     double lastError = 0;
-    double lastReference = 0;
     double integral = 0;
 
     public double calculate(double reference, double currentState) {
@@ -27,19 +26,14 @@ public class ControllerPID {
         double loopTime = getLoopTime();
         double derivative = (error - lastError) / loopTime;
 
-        if (lastReference != reference) {
-            integral = 0;
-        }
-
         integral += ((error + lastError) / 2) * loopTime;
 
         lastError = error;
-        lastReference = reference;
 
         return (kP * error) + (kI * integral) + (kD * derivative);
     }
 
-    public void reset()
+    private void reset()
     {
         lastError = 0;
         integral = 0;
