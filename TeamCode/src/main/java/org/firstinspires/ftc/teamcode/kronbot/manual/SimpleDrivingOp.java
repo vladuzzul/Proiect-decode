@@ -33,12 +33,11 @@ public class SimpleDrivingOp extends LinearOpMode {
         drivingGamepad = gamepad1;
 
         robotCentricDrive = new RobotCentricDrive(robot, drivingGamepad);
-        fieldCentricDrive = new FieldCentricDrive(robot, drivingGamepad);
+        //fieldCentricDrive = new FieldCentricDrive(robot, drivingGamepad);
         fieldCentricDriveAbsolute = new FieldCentricDriveAbsolute(robot, drivingGamepad);
 
         Button driveModeButton = new Button();
         Button reverseButton = new Button();
-        Button ungureanuButton = new Button();
 
         while (!isStopRequested() && !opModeIsActive()) {
             telemetry.addLine("Initialization Ready");
@@ -55,20 +54,16 @@ public class SimpleDrivingOp extends LinearOpMode {
             reverseButton.updateButton(drivingGamepad.circle);
             reverseButton.shortPress();
             robotCentricDrive.setReverse(reverseButton.getShortToggle());
+            fieldCentricDriveAbsolute.setReverse(reverseButton.getShortToggle());
 
-            ungureanuButton.updateButton(drivingGamepad.triangle);
-            ungureanuButton.shortPress();
-
-            if (ungureanuButton.getShortToggle()) {
-                telemetry.addLine("plang");
-                fieldCentricDriveAbsolute.run();
-                fieldCentricDriveAbsolute.telemetry(telemetry);
-            } else if (!driveModeButton.getLongToggle()) {
+            if (!driveModeButton.getLongToggle()) {
                 robotCentricDrive.run();
                 robotCentricDrive.telemetry(telemetry);
             } else {
-                fieldCentricDrive.run();
-                fieldCentricDrive.telemetry(telemetry);
+                if(drivingGamepad.triangle)
+                    fieldCentricDriveAbsolute.calibrateOrientation();
+                fieldCentricDriveAbsolute.run();
+                fieldCentricDriveAbsolute.telemetry(telemetry);
             }
 
             telemetry.update();
